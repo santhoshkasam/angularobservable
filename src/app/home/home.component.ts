@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription, interval, Observable } from 'rxjs';
+import { map, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-home',
@@ -35,7 +36,20 @@ export class HomeComponent implements OnInit, OnDestroy {
       }, 1000)
     });
 
-    this.firstObsSubscription = customIntervalObservable.subscribe(data => {
+    //We are modifying the data that we get from observable using map operator.
+    // customIntervalObservable.pipe(map((data: number) => {
+    //   return 'Round: ' + (data + 1);
+    // }));
+
+    // We can transform data that is Pipe by applying operators in the below code it is 
+    // first filter the data means when number >0 then only goto next operator and subscribe
+    // second oprator map to apply some text as Round to that data
+    // after transforming or applying operators on data we are subscribing.
+    this.firstObsSubscription = customIntervalObservable.pipe(filter((data:number) => {
+      return data > 0;
+    }), map((data: number) => {
+      return 'Round: ' + (data + 1);
+    })).subscribe(data => {
       console.log(data);
     }, error => {
       console.log(error);
